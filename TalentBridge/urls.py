@@ -14,9 +14,38 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Talent Bridge API",
+        default_version="v1",
+        description="API for Talent Bridge a Job Board Application that let's recruiters manage job listings and applicants can apply for jobs and manage applications",
+        contact=openapi.Contact(
+            name="Oluwaseyi Oke",
+            url="https://iamarvy.netlify.app",
+            email="okeseui5@gmail.com",
+        ),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
+api_patterns = [
+    path(
+        "docs/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    # add app urls here
+]
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("api/", include(api_patterns)),
 ]
