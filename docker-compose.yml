@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: talent-bridge-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: talent-bridge-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - talent_bridge_postgres_data:/var/lib/postgresql/data
+    networks:
+      - talent_bridge_network
+
+volumes:
+  talent_bridge_postgres_data:
+
+networks:
+  talent_bridge_network:
