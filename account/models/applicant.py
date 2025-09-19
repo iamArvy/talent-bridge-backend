@@ -1,68 +1,10 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 import uuid
-
+from .user import User
+from .skill import Skill
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
-class User(AbstractUser):
-    username = None
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField(unique=True)
-    ROLE_CHOICES = (
-        ("recruiter", "Recruiter"),
-        ("applicant", "Applicant"),
-    )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
-
-    def is_applicant(self):
-        return self.role == "applicant"
-
-    def is_recruiter(self):
-        return self.role == "recruiter"
-
-    def __str__(self):
-        return self.email
-
-
-class RecruiterProfile(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="recruiter_profile"
-    )
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    headline = models.CharField(max_length=255, blank=True)
-    bio = models.TextField(blank=True)
-    industry = models.CharField(max_length=255, blank=True)
-    years_of_experience = models.PositiveIntegerField(default=0)
-
-    agency_name = models.CharField(max_length=255, blank=True)
-    website = models.URLField(blank=True)
-    linkedin = models.URLField(blank=True)
-    location = models.CharField(max_length=255, blank=True)
-
-    verified = models.BooleanField(default=False)
-    total_hires = models.PositiveIntegerField(default=0)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} - Recruiter"
-
-
-class Skill(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=50, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
 
 
 class ApplicantProfile(models.Model):
@@ -70,6 +12,8 @@ class ApplicantProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="applicant_profile"
     )
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
     headline = models.CharField(max_length=100)
     professional_summary = models.TextField()
     email = models.EmailField(blank=True, null=True)
@@ -78,29 +22,26 @@ class ApplicantProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} - Applicant"
+        return f"{self.first_name} {self.last_name} - Applicant"
 
 
-class ApplicantSkill(models.Model):
+class Certification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
-        ApplicantProfile, on_delete=models.CASCADE, related_name="skills"
+        ApplicantProfile, on_delete=models.CASCADE, related_name="certifications"
     )
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-    level = models.CharField(
-        max_length=20,
-        choices=(
-            ("beginner", "Beginner"),
-            ("intermediate", "Intermediate"),
-            ("expert", "Expert"),
-        ),
-        blank=True,
-    )
+    name = models.CharField(max_length=255)  # e.g. "AWS Solutions Architect"
+    issuer = models.CharField(max_length=255)  # e.g. "Amazon"
+    issue_date = models.DateField()
+    expiration_date = models.DateField(blank=True, null=True)
+    credential_id = models.CharField(max_length=255, blank=True)
+    credential_url = models.URLField(blank=True, null=True)
+    skills = models.ManyToManyField("Skill", blank=True, related_name="certifications")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"User {self.applicant.id} - {self.skill.name}"
+        return f"{self.name} - {self.applicant.id}"
 
 
 class Education(models.Model):
@@ -166,23 +107,26 @@ class Project(models.Model):
         return f"User {self.applicant.id} - {self.name}"
 
 
-class Certification(models.Model):
+class ApplicantSkill(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
-        ApplicantProfile, on_delete=models.CASCADE, related_name="certifications"
+        ApplicantProfile, on_delete=models.CASCADE, related_name="skills"
     )
-    name = models.CharField(max_length=255)  # e.g. "AWS Solutions Architect"
-    issuer = models.CharField(max_length=255)  # e.g. "Amazon"
-    issue_date = models.DateField()
-    expiration_date = models.DateField(blank=True, null=True)
-    credential_id = models.CharField(max_length=255, blank=True)
-    credential_url = models.URLField(blank=True, null=True)
-    skills = models.ManyToManyField("Skill", blank=True, related_name="certifications")
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    level = models.CharField(
+        max_length=20,
+        choices=(
+            ("beginner", "Beginner"),
+            ("intermediate", "Intermediate"),
+            ("expert", "Expert"),
+        ),
+        blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name} - {self.applicant.id}"
+        return f"User {self.applicant.id} - {self.skill.name}"
 
 
 class Training(models.Model):
