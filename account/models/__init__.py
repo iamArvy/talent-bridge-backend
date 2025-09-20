@@ -1,7 +1,6 @@
 from .user import User, MyUserManager
-from .recruiter import RecruiterProfile
+from .profiles import RecruiterProfile, ApplicantProfile
 from .applicant import (
-    ApplicantProfile,
     ApplicantSkill,
     Project,
     Education,

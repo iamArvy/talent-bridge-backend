@@ -2,36 +2,18 @@ from django.db import models
 import uuid
 from .user import User
 from .skill import Skill
+from .profiles import ApplicantProfile
 from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
-
-
-class ApplicantProfile(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="applicant_profile"
-    )
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
-    headline = models.CharField(max_length=100)
-    professional_summary = models.TextField()
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name} - Applicant"
-
 
 class Certification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
         ApplicantProfile, on_delete=models.CASCADE, related_name="certifications"
     )
-    name = models.CharField(max_length=255)  # e.g. "AWS Solutions Architect"
-    issuer = models.CharField(max_length=255)  # e.g. "Amazon"
+    name = models.CharField(max_length=255) 
+    issuer = models.CharField(max_length=255)
     issue_date = models.DateField()
     expiration_date = models.DateField(blank=True, null=True)
     credential_id = models.CharField(max_length=255, blank=True)
@@ -134,8 +116,8 @@ class Training(models.Model):
     applicant = models.ForeignKey(
         ApplicantProfile, on_delete=models.CASCADE, related_name="trainings"
     )
-    title = models.CharField(max_length=255)  # e.g. "Agile Project Management"
-    provider = models.CharField(max_length=255)  # e.g. "Udemy, Coursera, Local Academy"
+    title = models.CharField(max_length=255)
+    provider = models.CharField(max_length=255)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
     skills = models.ManyToManyField("Skill", blank=True, related_name="trainings")
