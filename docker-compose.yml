@@ -14,6 +14,15 @@ services:
     networks:
       - talent_bridge_network
 
+  redis:
+    image: redis:latest
+    container_name: talent-bridge-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - talent_bridge_network
+
 volumes:
   talent_bridge_postgres_data:
 

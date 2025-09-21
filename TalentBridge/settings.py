@@ -41,6 +41,7 @@ env = environ.Env(
     CELERY_TASK_SERIALIZER=(str, "json"),
     CELERY_RESULT_SERIALIZER=(str, "json"),
     CELERY_TIMEZONE=(str, "UTC"),
+    CACHE_DATABASE_URL=(str, "redis://127.0.0.1:6379/1"),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -165,6 +166,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
     # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
@@ -197,4 +200,11 @@ SWAGGER_SETTINGS = {
             "description": "JWT token. Example: 'Bearer <your_token>'",
         }
     },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env("CACHE_DATABASE_URL"),
+    }
 }

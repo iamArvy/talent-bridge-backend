@@ -1,18 +1,18 @@
 from django.db import models
 import uuid
-from .user import User
 from .skill import Skill
 from .profiles import ApplicantProfile
 from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 
+
 class Certification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
         ApplicantProfile, on_delete=models.CASCADE, related_name="certifications"
     )
-    name = models.CharField(max_length=255) 
+    name = models.CharField(max_length=255)
     issuer = models.CharField(max_length=255)
     issue_date = models.DateField()
     expiration_date = models.DateField(blank=True, null=True)
@@ -65,7 +65,6 @@ class Experience(models.Model):
         default=list,
         help_text="List of bullet points describing responsibilities",
     )
-    skills = models.ManyToManyField("Skill", blank=True, related_name="experiences")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -81,7 +80,6 @@ class Project(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     link = models.URLField(blank=True, null=True)
-    skills = models.ManyToManyField("Skill", blank=True, related_name="projects")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -120,7 +118,6 @@ class Training(models.Model):
     provider = models.CharField(max_length=255)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
-    skills = models.ManyToManyField("Skill", blank=True, related_name="trainings")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

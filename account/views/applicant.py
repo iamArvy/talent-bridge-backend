@@ -4,16 +4,16 @@ from rest_framework.viewsets import ModelViewSet
 from django.shortcuts import get_object_or_404
 from account.permissions import IsApplicant
 from account.models import (
-  ApplicantProfile,
-  Certification,
-  Education,
-  Experience,
-  Project,
-  ApplicantSkill,
-  Training
+    ApplicantProfile,
+    Certification,
+    Education,
+    Experience,
+    Project,
+    ApplicantSkill,
+    Training,
 )
 from account.serializers import (
-     ApplicantProfileSerializer,
+    ApplicantProfileSerializer,
     CertificationSerializer,
     EducationSerializer,
     ExperienceSerializer,
@@ -22,9 +22,7 @@ from account.serializers import (
     TrainingSerializer,
 )
 
-# -----------------------------
-# Applicant Profile
-# -----------------------------
+
 class ApplicantProfileView(RetrieveUpdateAPIView):
     serializer_class = ApplicantProfileSerializer
     permission_classes = [IsAuthenticated, IsApplicant]
@@ -34,8 +32,10 @@ class ApplicantProfileView(RetrieveUpdateAPIView):
         user = self.request.user
         return get_object_or_404(ApplicantProfile, user=user)
 
+
 class ApplicantOwnedModelViewSet(ModelViewSet):
     """Base class for models linked to ApplicantProfile."""
+
     permission_classes = [IsAuthenticated, IsApplicant]
 
     def get_applicant_profile(self):
@@ -46,6 +46,7 @@ class ApplicantOwnedModelViewSet(ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(applicant=self.get_applicant_profile())
+
 
 class CertificationViewSet(ApplicantOwnedModelViewSet):
     queryset = Certification.objects.all()

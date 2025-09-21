@@ -11,15 +11,6 @@ from account.models import (
 from .skill import SkillSerializer
 
 
-class CertificationSerializer(serializers.ModelSerializer):
-    skills = SkillSerializer(many=True, read_only=True)
-    applicant = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = Certification
-        fields = "__all__"
-
-
 class EducationSerializer(serializers.ModelSerializer):
     applicant = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -28,8 +19,24 @@ class EducationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ApplicantSkillSerializer(serializers.ModelSerializer):
+    applicant = serializers.PrimaryKeyRelatedField(read_only=True)
+    skill = SkillSerializer(read_only=True)
+
+    class Meta:
+        model = ApplicantSkill
+        fields = "__all__"
+
+
+class CertificationSerializer(serializers.ModelSerializer):
+    applicant = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Certification
+        fields = "__all__"
+
+
 class ExperienceSerializer(serializers.ModelSerializer):
-    skills = SkillSerializer(many=True, read_only=True)
     applicant = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
@@ -38,7 +45,6 @@ class ExperienceSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    skills = SkillSerializer(many=True, read_only=True)
     applicant = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
@@ -46,16 +52,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ApplicantSkillSerializer(serializers.ModelSerializer):
-    skill = SkillSerializer(read_only=True)
-
-    class Meta:
-        model = ApplicantSkill
-        fields = "__all__"
-
-
 class TrainingSerializer(serializers.ModelSerializer):
-    skills = SkillSerializer(many=True, read_only=True)
     applicant = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
@@ -64,21 +61,6 @@ class TrainingSerializer(serializers.ModelSerializer):
 
 
 class ApplicantProfileSerializer(serializers.ModelSerializer):
-    certifications = CertificationSerializer(many=True, read_only=True)
-    education = EducationSerializer(many=True, read_only=True)
-    experiences = ExperienceSerializer(many=True, read_only=True)
-    projects = ProjectSerializer(many=True, read_only=True)
-    skills = ApplicantSkillSerializer(many=True, read_only=True)
-    trainings = TrainingSerializer(many=True, read_only=True)
-
-    def get_experiences(self, obj):
-        experiences = obj.experiences.order_by("-start_date")[:3]
-        return ExperienceSerializer(experiences, many=True).data
-
-    def get_certifications(self, obj):
-        experiences = obj.certifications.order_by("-start_date")[:3]
-        return CertificationSerializer(experiences, many=True).data
-
     class Meta:
         model = ApplicantProfile
         fields = "__all__"
