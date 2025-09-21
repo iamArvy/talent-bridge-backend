@@ -63,4 +63,17 @@ class TrainingSerializer(serializers.ModelSerializer):
 class ApplicantProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApplicantProfile
-        fields = "__all__"
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "headline",
+            "professional_summary",
+            "email",
+            "phone",
+            "user",
+        ]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "user": {"read_only": True},
+        }

@@ -6,7 +6,6 @@ from account.models import RecruiterProfile
 class RecruiterProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "headline",
         "industry",
         "years_of_experience",
         "verified",

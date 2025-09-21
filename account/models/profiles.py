@@ -1,7 +1,6 @@
 from django.db import models
 import uuid
 from .user import User
-from django.contrib.postgres.fields import ArrayField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 # Create your models here.
@@ -24,6 +23,7 @@ class ApplicantProfile(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} - Applicant"
 
+
 class RecruiterProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(
@@ -33,7 +33,6 @@ class RecruiterProfile(models.Model):
     last_name = models.CharField(max_length=150, blank=True)
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
-    headline = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     industry = models.CharField(max_length=255, blank=True)
     years_of_experience = models.PositiveIntegerField(default=0)
