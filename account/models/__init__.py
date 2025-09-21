@@ -1,5 +1,5 @@
 from .user import User, MyUserManager
-from .profiles import RecruiterProfile, ApplicantProfile
+from .profiles import Recruiter, Applicant
 from .applicant import (
     ApplicantSkill,
     Project,
@@ -14,9 +14,9 @@ from .skill import Skill
 __all__ = [
     "User",
     "MyUserManager",
-    "RecruiterProfile",
+    "Recruiter",
     "Skill",
-    "ApplicantProfile",
+    "Applicant",
     "ApplicantSkill",
     "Project",
     "Education",

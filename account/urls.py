@@ -4,8 +4,8 @@ from .views import (
     RegisterView,
     LoginView,
     RefreshTokenView,
-    ApplicantProfileView,
-    RecruiterProfileView,
+    ApplicantView,
+    RecruiterView,
     CertificationViewSet,
     EducationViewSet,
     ExperienceViewSet,
@@ -42,12 +42,12 @@ applicant_router.register("trainings", TrainingViewSet, basename="applicant-trai
 
 applicantUrlpatterns = [
     path("profile/", include(applicant_router.urls)),
-    path("", ApplicantProfileView.as_view(), name="applicant-profile"),
+    path("", ApplicantView.as_view(), name="applicant-profile"),
 ]
 
 # Recruiter Routers
 recruiterUrlpatterns = [
-    path("", RecruiterProfileView.as_view(), name="recruiter-profile"),
+    path("", RecruiterView.as_view(), name="recruiter-profile"),
 ]
 
 # Main Urls

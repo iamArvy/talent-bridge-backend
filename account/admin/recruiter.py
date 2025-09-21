@@ -1,9 +1,9 @@
 from django.contrib import admin
-from account.models import RecruiterProfile
+from account.models import Recruiter
 
 
-@admin.register(RecruiterProfile)
-class RecruiterProfileAdmin(admin.ModelAdmin):
+@admin.register(Recruiter)
+class RecruiterAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "industry",

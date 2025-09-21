@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     "account",
+    "board",
 ]
 
 MIDDLEWARE = [

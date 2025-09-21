@@ -6,7 +6,7 @@ from account.models import (
     Project,
     ApplicantSkill,
     Training,
-    ApplicantProfile,
+    Applicant,
 )
 from .skill import SkillSerializer
 
@@ -60,9 +60,9 @@ class TrainingSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ApplicantProfileSerializer(serializers.ModelSerializer):
+class ApplicantSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ApplicantProfile
+        model = Applicant
         fields = [
             "id",
             "first_name",
