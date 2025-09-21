@@ -20,6 +20,8 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework_simplejwt.authentication import JWTAuthentication
+import account.urls
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -29,11 +31,12 @@ schema_view = get_schema_view(
         contact=openapi.Contact(
             name="Oluwaseyi Oke",
             url="https://iamarvy.netlify.app",
-            email="okeseui5@gmail.com",
+            email="okeseyi5@gmail.com",
         ),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
+    authentication_classes=(JWTAuthentication,),
 )
 
 api_patterns = [
@@ -42,6 +45,7 @@ api_patterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
+    path("auth/", include(account.urls.urlpatterns)),
     # add app urls here
 ]
 
