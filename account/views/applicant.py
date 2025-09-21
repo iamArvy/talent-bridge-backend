@@ -45,6 +45,8 @@ class ApplicantOwnedModelViewSet(ModelViewSet):
         serializer.save(applicant=self.get_applicant_profile())
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return self.queryset.none()
         return self.queryset.filter(applicant=self.get_applicant_profile())
 
 
