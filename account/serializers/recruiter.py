@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from account.models import RecruiterProfile
+from account.models import Recruiter
 
 
-class RecruiterProfileSerializer(serializers.ModelSerializer):
+class RecruiterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = RecruiterProfile
+        model = Recruiter
         fields = (
             "id",
             "first_name",

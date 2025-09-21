@@ -1,6 +1,6 @@
 from django.contrib import admin
 from account.models import (
-    ApplicantProfile,
+    Applicant,
     ApplicantSkill,
     Education,
     Experience,
@@ -46,8 +46,8 @@ class TrainingInline(admin.TabularInline):
 # Applicant Admin
 
 
-@admin.register(ApplicantProfile)
-class ApplicantProfileAdmin(admin.ModelAdmin):
+@admin.register(Applicant)
+class ApplicantAdmin(admin.ModelAdmin):
     list_display = ("user", "headline", "email", "phone")
     search_fields = ("user__email", "headline", "email")
     inlines = [

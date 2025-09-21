@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('account', '0002_remove_experience_skills_remove_project_skills_and_more'),
+        ("account", "0002_remove_experience_skills_remove_project_skills_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='recruiterprofile',
-            name='headline',
+            model_name="Recruiter",
+            name="headline",
         ),
     ]

@@ -1,8 +1,8 @@
 from django.db import models
 import uuid
 from account.models import (
-    RecruiterProfile,
-    ApplicantProfile,
+    Recruiter,
+    Applicant,
     Experience,
     Education,
     ApplicantSkill,
@@ -45,7 +45,7 @@ class Job(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True
     )
     recruiter = models.ForeignKey(
-        RecruiterProfile, on_delete=models.CASCADE, related_name="jobs"
+        Recruiter, on_delete=models.CASCADE, related_name="jobs"
     )
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -80,7 +80,7 @@ class JobApplication(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
     applicant = models.ForeignKey(
-        ApplicantProfile, on_delete=models.CASCADE, related_name="applications"
+        Applicant, on_delete=models.CASCADE, related_name="applications"
     )
     cover_letter = models.TextField()
     education = models.ManyToManyField(Education)
@@ -88,7 +88,9 @@ class JobApplication(models.Model):
     training = models.ManyToManyField(Training)
     certifications = models.ManyToManyField(Certification)
     experiences = models.ManyToManyField(Experience)
-    status = models.CharField(max_length=255, choices=APPLICATION_STATUS_CHOICES)
+    status = models.CharField(
+        max_length=10, choices=APPLICATION_STATUS_CHOICES, default="pending"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

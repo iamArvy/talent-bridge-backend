@@ -6,7 +6,7 @@ from django.dispatch import receiver
 # Create your models here.
 
 
-class ApplicantProfile(models.Model):
+class Applicant(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="applicant_profile"
@@ -24,7 +24,7 @@ class ApplicantProfile(models.Model):
         return f"{self.first_name} {self.last_name} - Applicant"
 
 
-class RecruiterProfile(models.Model):
+class Recruiter(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="recruiter_profile"
@@ -55,11 +55,11 @@ class RecruiterProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     """
-    Automatically create ApplicantProfile or RecruiterProfile
+    Automatically create Applicant or Recruiter
     whenever a new user is created.
     """
     if created:
         if instance.role == "applicant":
-            ApplicantProfile.objects.create(user=instance)
+            Applicant.objects.create(user=instance)
         elif instance.role == "recruiter":
-            RecruiterProfile.objects.create(user=instance)
+            Recruiter.objects.create(user=instance)

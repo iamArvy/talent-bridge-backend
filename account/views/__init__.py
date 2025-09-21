@@ -1,11 +1,19 @@
 from .auth import RegisterView, LoginView, RefreshTokenView
-from .applicant import ApplicantProfileView, CertificationViewSet, EducationViewSet, ExperienceViewSet, ProjectViewSet, ApplicantSkillViewSet, TrainingViewSet
-from .recruiter import RecruiterProfileView
+from .applicant import (
+    ApplicantView,
+    CertificationViewSet,
+    EducationViewSet,
+    ExperienceViewSet,
+    ProjectViewSet,
+    ApplicantSkillViewSet,
+    TrainingViewSet,
+)
+from .recruiter import RecruiterView
 from .skill import SkillViewSet
 # from .user import User, MyUserManager
-# from .recruiter import RecruiterProfile
+# from .recruiter import Recruiter
 # from .applicant import (
-#     ApplicantProfile,
+#     Applicant,
 #     ApplicantSkill,
 #     Project,
 #     Education,
@@ -20,21 +28,21 @@ __all__ = [
     "RegisterView",
     "LoginView",
     "RefreshTokenView",
-    "ApplicantProfileView",
-    "RecruiterProfileView",
+    "ApplicantView",
+    "RecruiterView",
     "CertificationViewSet",
     "EducationViewSet",
     "ExperienceViewSet",
     "ProjectViewSet",
     "ApplicantSkillViewSet",
     "TrainingViewSet",
-    "SkillViewSet"
+    "SkillViewSet",
     # "ProfileViewSet"
     # "User",
     # "MyUserManager",
-    # "RecruiterProfile",
+    # "Recruiter",
     # "Skill",
-    # "ApplicantProfile",
+    # "Applicant",
     # "ApplicantSkill",
     # "Project",
     # "Education",

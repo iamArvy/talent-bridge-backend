@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from django.shortcuts import get_object_or_404
 from account.permissions import IsApplicant
 from account.models import (
-    ApplicantProfile,
+    Applicant,
     Certification,
     Education,
     Experience,
@@ -13,7 +13,7 @@ from account.models import (
     Training,
 )
 from account.serializers import (
-    ApplicantProfileSerializer,
+    ApplicantSerializer,
     CertificationSerializer,
     EducationSerializer,
     ExperienceSerializer,
@@ -23,23 +23,23 @@ from account.serializers import (
 )
 
 
-class ApplicantProfileView(RetrieveUpdateAPIView):
-    serializer_class = ApplicantProfileSerializer
+class ApplicantView(RetrieveUpdateAPIView):
+    serializer_class = ApplicantSerializer
     permission_classes = [IsAuthenticated, IsApplicant]
 
     def get_object(self):
         """Return the logged-in user's applicant profile."""
         user = self.request.user
-        return get_object_or_404(ApplicantProfile, user=user)
+        return get_object_or_404(Applicant, user=user)
 
 
 class ApplicantOwnedModelViewSet(ModelViewSet):
-    """Base class for models linked to ApplicantProfile."""
+    """Base class for models linked to Applicant."""
 
     permission_classes = [IsAuthenticated, IsApplicant]
 
     def get_applicant_profile(self):
-        return get_object_or_404(ApplicantProfile, user=self.request.user)
+        return get_object_or_404(Applicant, user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(applicant=self.get_applicant_profile())
