@@ -13,7 +13,7 @@ class JobViewSet(viewsets.ModelViewSet):
     permission_classes = [IsRecruiterOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(recruiter=self.request.user.recruiter)
+        serializer.save(recruiter=self.request.user)
 
 
 class JobApplicationViewSet(viewsets.ModelViewSet):

@@ -1,9 +1,6 @@
 from django.db import models
 import uuid
-from account.models import (
-    Recruiter,
-    Applicant,
-)
+from account.models import User
 from django.contrib.postgres.fields import ArrayField
 
 
@@ -39,9 +36,7 @@ class Job(models.Model):
     salary_max = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True
     )
-    recruiter = models.ForeignKey(
-        Recruiter, on_delete=models.CASCADE, related_name="jobs"
-    )
+    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="jobs")
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -75,7 +70,7 @@ class JobApplication(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
     applicant = models.ForeignKey(
-        Applicant, on_delete=models.CASCADE, related_name="applications"
+        User, on_delete=models.CASCADE, related_name="applications"
     )
     cover_letter = models.TextField()
     profile = models.JSONField(default=dict, blank=True)
