@@ -5,24 +5,10 @@ from .applicant import (
     EducationViewSet,
     ExperienceViewSet,
     ProjectViewSet,
-    ApplicantSkillViewSet,
+    SkillViewSet,
     TrainingViewSet,
 )
 from .recruiter import RecruiterView
-from .skill import SkillViewSet
-# from .user import User, MyUserManager
-# from .recruiter import Recruiter
-# from .applicant import (
-#     Applicant,
-#     ApplicantSkill,
-#     Project,
-#     Education,
-#     Training,
-#     Certification,
-#     Experience,
-# )
-# from .skill import Skill
-
 
 __all__ = [
     "RegisterView",
@@ -34,19 +20,6 @@ __all__ = [
     "EducationViewSet",
     "ExperienceViewSet",
     "ProjectViewSet",
-    "ApplicantSkillViewSet",
     "TrainingViewSet",
     "SkillViewSet",
-    # "ProfileViewSet"
-    # "User",
-    # "MyUserManager",
-    # "Recruiter",
-    # "Skill",
-    # "Applicant",
-    # "ApplicantSkill",
-    # "Project",
-    # "Education",
-    # "Training",
-    # "Certification",
-    # "Experience",
 ]

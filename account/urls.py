@@ -10,15 +10,10 @@ from .views import (
     EducationViewSet,
     ExperienceViewSet,
     ProjectViewSet,
-    ApplicantSkillViewSet,
-    TrainingViewSet,
     SkillViewSet,
+    TrainingViewSet,
 )
 from rest_framework.routers import DefaultRouter
-
-
-router = DefaultRouter()
-router.register(r"skills", SkillViewSet, basename="skill")
 
 # Auth URLs
 authUrlPatterns = [
@@ -37,33 +32,13 @@ applicant_router.register(
     "experiences", ExperienceViewSet, basename="applicant-experience"
 )
 applicant_router.register("projects", ProjectViewSet, basename="applicant-project")
-applicant_router.register("skills", ApplicantSkillViewSet, basename="applicant-skill")
+applicant_router.register("skills", SkillViewSet, basename="applicant-skill")
 applicant_router.register("trainings", TrainingViewSet, basename="applicant-training")
-
-applicantUrlpatterns = [
-    path("profile/", include(applicant_router.urls)),
-    path("", ApplicantView.as_view(), name="applicant-profile"),
-]
-
-# Recruiter Routers
-recruiterUrlpatterns = [
-    path("", RecruiterView.as_view(), name="recruiter-profile"),
-]
 
 # Main Urls
 urlpatterns = [
     path("auth/", include(authUrlPatterns)),
-    path("applicant/", include(applicantUrlpatterns)),
-    path("recruiter/", include(recruiterUrlpatterns)),
-    path("", include(router.urls)),
+    path("applicant/", ApplicantView.as_view(), name="applicant-profile"),
+    path("recruiter/", RecruiterView.as_view(), name="recruiter-profile"),
+    path("", include(applicant_router.urls)),
 ]
-
-# {
-#   "first_name": "Oluwaseyi",
-#   "last_name": "Oke",
-#   "headline": "Web Developer",
-#   "professional_summary": "I am a Web Developer",
-#   "email": "user@example.com",
-#   "phone": "08109229601",
-#   "user": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-# }

@@ -27,10 +27,3 @@ class JobApplicationAdmin(admin.ModelAdmin):
     list_filter = ("status", "created_at")
     ordering = ("-created_at",)
     readonly_fields = ("created_at", "updated_at")
-    filter_horizontal = (
-        "education",
-        "skills",
-        "training",
-        "certifications",
-        "experiences",
-    )

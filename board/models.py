@@ -3,11 +3,6 @@ import uuid
 from account.models import (
     Recruiter,
     Applicant,
-    Experience,
-    Education,
-    ApplicantSkill,
-    Training,
-    Certification,
 )
 from django.contrib.postgres.fields import ArrayField
 
@@ -83,11 +78,12 @@ class JobApplication(models.Model):
         Applicant, on_delete=models.CASCADE, related_name="applications"
     )
     cover_letter = models.TextField()
-    education = models.ManyToManyField(Education)
-    skills = models.ManyToManyField(ApplicantSkill)
-    training = models.ManyToManyField(Training)
-    certifications = models.ManyToManyField(Certification)
-    experiences = models.ManyToManyField(Experience)
+    profile = models.JSONField(default=dict, blank=True)
+    education = models.JSONField(default=list, blank=True)
+    skills = models.JSONField(default=list, blank=True)
+    training = models.JSONField(default=list, blank=True)
+    certifications = models.JSONField(default=list, blank=True)
+    experiences = models.JSONField(default=list, blank=True)
     status = models.CharField(
         max_length=10, choices=APPLICATION_STATUS_CHOICES, default="pending"
     )

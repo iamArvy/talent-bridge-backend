@@ -1,14 +1,13 @@
 from .user import User, MyUserManager
 from .profiles import Recruiter, Applicant
 from .applicant import (
-    ApplicantSkill,
     Project,
     Education,
     Training,
     Certification,
     Experience,
+    Skill
 )
-from .skill import Skill
 
 
 __all__ = [
@@ -17,7 +16,6 @@ __all__ = [
     "Recruiter",
     "Skill",
     "Applicant",
-    "ApplicantSkill",
     "Project",
     "Education",
     "Training",

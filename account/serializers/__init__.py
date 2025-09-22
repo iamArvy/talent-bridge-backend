@@ -6,10 +6,9 @@ from .applicant import (
     EducationSerializer,
     ExperienceSerializer,
     ProjectSerializer,
-    ApplicantSkillSerializer,
+    SkillSerializer,
     TrainingSerializer,
 )
-from .skill import SkillSerializer
 
 __all__ = [
     "RegisterSerializer",
@@ -20,7 +19,6 @@ __all__ = [
     "EducationSerializer",
     "ExperienceSerializer",
     "ProjectSerializer",
-    "ApplicantSkillSerializer",
-    "TrainingSerializer",
     "SkillSerializer",
+    "TrainingSerializer",
 ]

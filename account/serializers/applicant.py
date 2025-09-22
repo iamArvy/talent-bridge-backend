@@ -4,11 +4,10 @@ from account.models import (
     Education,
     Experience,
     Project,
-    ApplicantSkill,
+    Skill,
     Training,
     Applicant,
 )
-from .skill import SkillSerializer
 
 
 class EducationSerializer(serializers.ModelSerializer):
@@ -19,12 +18,11 @@ class EducationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ApplicantSkillSerializer(serializers.ModelSerializer):
+class SkillSerializer(serializers.ModelSerializer):
     applicant = serializers.PrimaryKeyRelatedField(read_only=True)
-    skill = SkillSerializer(read_only=True)
 
     class Meta:
-        model = ApplicantSkill
+        model = Skill
         fields = "__all__"
 
 
@@ -63,17 +61,5 @@ class TrainingSerializer(serializers.ModelSerializer):
 class ApplicantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applicant
-        fields = [
-            "id",
-            "first_name",
-            "last_name",
-            "headline",
-            "professional_summary",
-            "email",
-            "phone",
-            "user",
-        ]
-        extra_kwargs = {
-            "id": {"read_only": True},
-            "user": {"read_only": True},
-        }
+        fields = "__all__"
+        read_only_fields = ("id", "user", "email")

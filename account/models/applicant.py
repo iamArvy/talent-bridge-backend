@@ -1,6 +1,5 @@
 from django.db import models
 import uuid
-from .skill import Skill
 from .profiles import Applicant
 from django.contrib.postgres.fields import ArrayField
 
@@ -18,7 +17,6 @@ class Certification(models.Model):
     expiration_date = models.DateField(blank=True, null=True)
     credential_id = models.CharField(max_length=255, blank=True)
     credential_url = models.URLField(blank=True, null=True)
-    skills = models.ManyToManyField("Skill", blank=True, related_name="certifications")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -87,26 +85,24 @@ class Project(models.Model):
         return f"User {self.applicant.id} - {self.name}"
 
 
-class ApplicantSkill(models.Model):
+class Skill(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
         Applicant, on_delete=models.CASCADE, related_name="skills"
     )
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-    level = models.CharField(
-        max_length=20,
-        choices=(
-            ("beginner", "Beginner"),
-            ("intermediate", "Intermediate"),
-            ("expert", "Expert"),
-        ),
-        blank=True,
-    )
+    name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["applicant", "name"], name="unique_applicant_skill"
+            )
+        ]
+
     def __str__(self):
-        return f"User {self.applicant.id} - {self.skill.name}"
+        return f"User {self.applicant.id} - {self.name}"
 
 
 class Training(models.Model):

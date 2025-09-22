@@ -9,7 +9,7 @@ from account.models import (
     Education,
     Experience,
     Project,
-    ApplicantSkill,
+    Skill,
     Training,
 )
 from account.serializers import (
@@ -18,7 +18,7 @@ from account.serializers import (
     EducationSerializer,
     ExperienceSerializer,
     ProjectSerializer,
-    ApplicantSkillSerializer,
+    SkillSerializer,
     TrainingSerializer,
 )
 
@@ -70,9 +70,9 @@ class ProjectViewSet(ApplicantOwnedModelViewSet):
     serializer_class = ProjectSerializer
 
 
-class ApplicantSkillViewSet(ApplicantOwnedModelViewSet):
-    queryset = ApplicantSkill.objects.all()
-    serializer_class = ApplicantSkillSerializer
+class SkillViewSet(ApplicantOwnedModelViewSet):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
 
 
 class TrainingViewSet(ApplicantOwnedModelViewSet):

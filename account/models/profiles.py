@@ -42,7 +42,6 @@ class Recruiter(models.Model):
     linkedin = models.URLField(blank=True)
     location = models.CharField(max_length=255, blank=True)
 
-    verified = models.BooleanField(default=False)
     total_hires = models.PositiveIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)

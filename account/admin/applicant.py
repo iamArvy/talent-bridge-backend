@@ -1,7 +1,7 @@
 from django.contrib import admin
 from account.models import (
     Applicant,
-    ApplicantSkill,
+    Skill,
     Education,
     Experience,
     Project,
@@ -13,8 +13,8 @@ from account.models import (
 # Inline Classes (for Applicant)
 
 
-class ApplicantSkillInline(admin.TabularInline):
-    model = ApplicantSkill
+class SkillInline(admin.TabularInline):
+    model = Skill
     extra = 1
 
 
@@ -51,7 +51,7 @@ class ApplicantAdmin(admin.ModelAdmin):
     list_display = ("user", "headline", "email", "phone")
     search_fields = ("user__email", "headline", "email")
     inlines = [
-        ApplicantSkillInline,
+        SkillInline,
         EducationInline,
         ExperienceInline,
         ProjectInline,

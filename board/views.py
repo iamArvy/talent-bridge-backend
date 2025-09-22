@@ -24,6 +24,12 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(applicant=self.request.user.applicant)
 
+    def update(self, request, *args, **kwargs):
+        return Response({"error": "Applications cannot be updated"}, status=405)
+
+    def partial_update(self, request, *args, **kwargs):
+        return Response({"error": "Applications cannot be updated"}, status=405)
+
     @action(
         detail=True,
         methods=["patch"],

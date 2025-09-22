@@ -17,4 +17,10 @@ class JobApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApplication
         fields = "__all__"
-        read_only_fields = ("created_at", "updated_at", "id", "status")
+        read_only_fields = ("created_at", "updated_at", "id", "status", "applicant")
+    
+    def update(self, instance, validated_data):
+        """
+        Prevent updates except status (which is handled in a special view).
+        """
+        raise serializers.ValidationError("Applications cannot be updated after creation.")

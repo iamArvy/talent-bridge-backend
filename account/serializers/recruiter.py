@@ -18,7 +18,6 @@ class RecruiterSerializer(serializers.ModelSerializer):
             "website",
             "linkedin",
             "location",
-            "verified",
             "total_hires",
             "user",
         )
