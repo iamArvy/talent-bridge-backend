@@ -1,7 +1,5 @@
 from .auth import RegisterSerializer, LoginSerializer
-from .recruiter import RecruiterSerializer
 from .applicant import (
-    ApplicantSerializer,
     CertificationSerializer,
     EducationSerializer,
     ExperienceSerializer,
@@ -9,6 +7,8 @@ from .applicant import (
     SkillSerializer,
     TrainingSerializer,
 )
+
+from .profile import ApplicantSerializer, RecruiterSerializer
 
 __all__ = [
     "RegisterSerializer",

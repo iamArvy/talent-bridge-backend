@@ -1,6 +1,5 @@
 from .auth import RegisterView, LoginView, RefreshTokenView
 from .applicant import (
-    ApplicantView,
     CertificationViewSet,
     EducationViewSet,
     ExperienceViewSet,
@@ -8,14 +7,14 @@ from .applicant import (
     SkillViewSet,
     TrainingViewSet,
 )
-from .recruiter import RecruiterView
+from .profile import ApplicantProfileView, RecruiterProfileView
 
 __all__ = [
     "RegisterView",
     "LoginView",
     "RefreshTokenView",
-    "ApplicantView",
-    "RecruiterView",
+    "ApplicantProfileView",
+    "RecruiterProfileView",
     "CertificationViewSet",
     "EducationViewSet",
     "ExperienceViewSet",

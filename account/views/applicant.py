@@ -1,10 +1,7 @@
-from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-from django.shortcuts import get_object_or_404
 from account.permissions import IsApplicant
 from account.models import (
-    Applicant,
     Certification,
     Education,
     Experience,
@@ -13,7 +10,6 @@ from account.models import (
     Training,
 )
 from account.serializers import (
-    ApplicantSerializer,
     CertificationSerializer,
     EducationSerializer,
     ExperienceSerializer,
@@ -23,31 +19,18 @@ from account.serializers import (
 )
 
 
-class ApplicantView(RetrieveUpdateAPIView):
-    serializer_class = ApplicantSerializer
-    permission_classes = [IsAuthenticated, IsApplicant]
-
-    def get_object(self):
-        """Return the logged-in user's applicant profile."""
-        user = self.request.user
-        return get_object_or_404(Applicant, user=user)
-
-
 class ApplicantOwnedModelViewSet(ModelViewSet):
     """Base class for models linked to Applicant."""
 
     permission_classes = [IsAuthenticated, IsApplicant]
 
-    def get_applicant_profile(self):
-        return get_object_or_404(Applicant, user=self.request.user)
-
     def perform_create(self, serializer):
-        serializer.save(applicant=self.get_applicant_profile())
+        serializer.save(user=self.request.user)
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
             return self.queryset.none()
-        return self.queryset.filter(applicant=self.get_applicant_profile())
+        return self.queryset.filter(user=self.request.user)
 
 
 class CertificationViewSet(ApplicantOwnedModelViewSet):

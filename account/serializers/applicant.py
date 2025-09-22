@@ -6,7 +6,6 @@ from account.models import (
     Project,
     Skill,
     Training,
-    Applicant,
 )
 
 
@@ -56,10 +55,3 @@ class TrainingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Training
         fields = "__all__"
-
-
-class ApplicantSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Applicant
-        fields = "__all__"
-        read_only_fields = ("id", "user", "email")

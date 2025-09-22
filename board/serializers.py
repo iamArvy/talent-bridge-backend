@@ -3,7 +3,7 @@ from .models import Job, JobApplication
 
 
 class JobSerializer(serializers.ModelSerializer):
-    recruiter = serializers.ReadOnlyField(source="recruiter")
+    recruiter = serializers.ReadOnlyField()
 
     class Meta:
         model = Job
@@ -12,7 +12,7 @@ class JobSerializer(serializers.ModelSerializer):
 
 
 class JobApplicationSerializer(serializers.ModelSerializer):
-    applicant = serializers.ReadOnlyField(source="applicant")
+    applicant = serializers.ReadOnlyField()
 
     class Meta:
         model = JobApplication

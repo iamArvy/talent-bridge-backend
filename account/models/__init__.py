@@ -1,13 +1,6 @@
 from .user import User, MyUserManager
-from .profiles import Recruiter, Applicant
-from .applicant import (
-    Project,
-    Education,
-    Training,
-    Certification,
-    Experience,
-    Skill
-)
+from .profile import Recruiter, Applicant
+from .applicant import Project, Education, Training, Certification, Experience, Skill
 
 
 __all__ = [

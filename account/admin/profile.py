@@ -1,5 +1,11 @@
 from django.contrib import admin
-from account.models import Recruiter
+from account.models import Applicant, Recruiter
+
+
+@admin.register(Applicant)
+class ApplicantAdmin(admin.ModelAdmin):
+    list_display = ("user", "headline", "email", "phone")
+    search_fields = ("user__email", "headline", "email")
 
 
 @admin.register(Recruiter)

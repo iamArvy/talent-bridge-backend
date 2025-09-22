@@ -1,7 +1,12 @@
 from .user import UserAdmin, UserChangeForm, UserCreationForm
-from .recruiter import RecruiterAdmin
+from .profile import RecruiterAdmin, ApplicantAdmin
 from .applicant import (
-    ApplicantAdmin,
+    SkillAdmin,
+    EducationAdmin,
+    ExperienceAdmin,
+    ProjectAdmin,
+    CertificationAdmin,
+    TrainingAdmin,
 )
 
 __all__ = [
@@ -11,4 +16,9 @@ __all__ = [
     "RecruiterAdmin",
     "ApplicantAdmin",
     "SkillAdmin",
+    "EducationAdmin",
+    "ExperienceAdmin",
+    "ProjectAdmin",
+    "CertificationAdmin",
+    "TrainingAdmin",
 ]

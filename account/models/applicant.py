@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from .profiles import Applicant
+from .user import User
 from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
@@ -9,7 +9,7 @@ from django.contrib.postgres.fields import ArrayField
 class Certification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
-        Applicant, on_delete=models.CASCADE, related_name="certifications"
+        User, on_delete=models.CASCADE, related_name="certifications"
     )
     name = models.CharField(max_length=255)
     issuer = models.CharField(max_length=255)
@@ -27,7 +27,7 @@ class Certification(models.Model):
 class Education(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
-        Applicant, on_delete=models.CASCADE, related_name="education"
+        User, on_delete=models.CASCADE, related_name="education"
     )
     institution = models.CharField(max_length=255)
     degree = models.CharField(max_length=255)
@@ -51,7 +51,7 @@ class Education(models.Model):
 class Experience(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
-        Applicant, on_delete=models.CASCADE, related_name="experiences"
+        User, on_delete=models.CASCADE, related_name="experiences"
     )
     title = models.CharField(max_length=255)
     company = models.CharField(max_length=255)
@@ -73,7 +73,7 @@ class Experience(models.Model):
 class Project(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
-        Applicant, on_delete=models.CASCADE, related_name="projects"
+        User, on_delete=models.CASCADE, related_name="projects"
     )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -87,9 +87,7 @@ class Project(models.Model):
 
 class Skill(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    applicant = models.ForeignKey(
-        Applicant, on_delete=models.CASCADE, related_name="skills"
-    )
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE, related_name="skills")
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -108,7 +106,7 @@ class Skill(models.Model):
 class Training(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(
-        Applicant, on_delete=models.CASCADE, related_name="trainings"
+        User, on_delete=models.CASCADE, related_name="trainings"
     )
     title = models.CharField(max_length=255)
     provider = models.CharField(max_length=255)

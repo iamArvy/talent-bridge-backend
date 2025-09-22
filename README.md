@@ -53,10 +53,10 @@ The **Talent Bridge API** powers a job board platform that connects recruiters a
 ### Relationships
 
 * A user can be a **Recruiter** or **Applicant** depending on role.
-* Recruiters create multiple job postings.
-* Applicants can apply to multiple jobs.
+* Recruiter users create multiple job postings.
+* Applicant users can apply to multiple jobs.
 * Each job can have many applications.
-* Applicants can maintain multiple education records, skills, experiences, trainings, certifications, and projects.
+* Applicant users can maintain multiple education records, skills, experiences, trainings, certifications, and projects.
 
 ---
 

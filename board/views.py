@@ -22,7 +22,7 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsApplicantOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(applicant=self.request.user.applicant)
+        serializer.save(applicant=self.request.user)
 
     def update(self, request, *args, **kwargs):
         return Response({"error": "Applications cannot be updated"}, status=405)

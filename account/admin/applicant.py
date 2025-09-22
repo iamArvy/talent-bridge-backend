@@ -1,6 +1,5 @@
 from django.contrib import admin
 from account.models import (
-    Applicant,
     Skill,
     Education,
     Experience,
@@ -10,51 +9,37 @@ from account.models import (
 )
 
 
-# Inline Classes (for Applicant)
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
 
 
-class SkillInline(admin.TabularInline):
-    model = Skill
-    extra = 1
+@admin.register(Education)
+class EducationAdmin(admin.ModelAdmin):
+    list_display = ("institution", "degree", "start_date", "end_date")
+    search_fields = ("institution", "degree")
 
 
-class EducationInline(admin.TabularInline):
-    model = Education
-    extra = 1
+@admin.register(Experience)
+class ExperienceAdmin(admin.ModelAdmin):
+    list_display = ("title", "company", "start_date", "end_date")
+    search_fields = ("title", "company")
 
 
-class ExperienceInline(admin.TabularInline):
-    model = Experience
-    extra = 1
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("name", "link")
+    search_fields = ("name",)
 
 
-class ProjectInline(admin.TabularInline):
-    model = Project
-    extra = 1
+@admin.register(Certification)
+class CertificationAdmin(admin.ModelAdmin):
+    list_display = ("name", "issuer", "issue_date", "expiration_date")
+    search_fields = ("name", "issuer")
 
 
-class CertificationInline(admin.TabularInline):
-    model = Certification
-    extra = 1
-
-
-class TrainingInline(admin.TabularInline):
-    model = Training
-    extra = 1
-
-
-# Applicant Admin
-
-
-@admin.register(Applicant)
-class ApplicantAdmin(admin.ModelAdmin):
-    list_display = ("user", "headline", "email", "phone")
-    search_fields = ("user__email", "headline", "email")
-    inlines = [
-        SkillInline,
-        EducationInline,
-        ExperienceInline,
-        ProjectInline,
-        CertificationInline,
-        TrainingInline,
-    ]
+@admin.register(Training)
+class TrainingAdmin(admin.ModelAdmin):
+    list_display = ("title", "provider", "start_date", "end_date")
+    search_fields = ("title", "provider")
