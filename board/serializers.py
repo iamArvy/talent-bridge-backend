@@ -4,11 +4,12 @@ from .models import Job, JobApplication
 
 class JobSerializer(serializers.ModelSerializer):
     recruiter = serializers.ReadOnlyField()
+    recruiter_profile = serializers.ReadOnlyField()
 
     class Meta:
         model = Job
         fields = "__all__"
-        read_only_fields = ("created_at", "id")
+        read_only_fields = ("created_at", "id", "recruiter_profle")
 
 
 class JobApplicationSerializer(serializers.ModelSerializer):

@@ -1,29 +1,52 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Job, JobApplication
 from .serializers import JobSerializer, JobApplicationSerializer
-from .permissions import IsRecruiterOrReadOnly, IsApplicantOrReadOnly, IsRecruiterOfJob
-import django_filters
+from .permissions import IsRecruiterOrReadOnly, IsRecruiterOfJob
+from account.permissions import IsApplicant, IsRecruiter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from .swagger_params import job_filter_params
+from .filters import JobFilter, JobApplicationFilter
 
 # Create your views here.
 
 
-class JobFilter(django_filters.FilterSet):
-    salary_min = django_filters.NumberFilter(field_name="salary_min", lookup_expr="gte")
-    salary_max = django_filters.NumberFilter(field_name="salary_max", lookup_expr="lte")
-    location = django_filters.CharFilter(lookup_expr="icontains")
-    type = django_filters.CharFilter(lookup_expr="iexact")
-    industry = django_filters.CharFilter(lookup_expr="icontains")
+class ApplicationViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    Only supports retrieving a single application
+    + custom change_status action
+    """
 
-    class Meta:
-        model = Job
-        fields = ["location", "type", "industry", "salary_min", "salary_max"]
+    queryset = JobApplication.objects.all()
+    serializer_class = JobApplicationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_applicant():
+            return JobApplication.objects.filter(applicant=user)
+        elif user.is_recruiter():
+            return JobApplication.objects.filter(job__recruiter=user)
+        return JobApplication.objects.none()
+
+    @action(
+        detail=True,
+        methods=["patch"],
+        url_path="change_status",
+        permission_classes=[permissions.IsAuthenticated, IsRecruiterOfJob],
+    )
+    def change_status(self, request, pk=None):
+        application = self.get_object()
+        new_status = request.data.get("status")
+        if new_status not in dict(JobApplication.APPLICATION_STATUS_CHOICES):
+            return Response({"error": "Invalid status"}, status=400)
+        application.status = new_status
+        application.save()
+        return Response({"status": "updated", "new_status": application.status})
 
 
 class JobViewSet(viewsets.ModelViewSet):
@@ -40,96 +63,104 @@ class JobViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "salary_min", "salary_max"]
 
     def perform_create(self, serializer):
-        serializer.save(recruiter=self.request.user)
+        serializer.save(
+            recruiter=self.request.user,
+            recruiter_profile=self.request.user.recruiter_profile,
+        )
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                "location",
-                openapi.IN_QUERY,
-                description="Filter by location",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "type",
-                openapi.IN_QUERY,
-                description="Filter by job type",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "industry",
-                openapi.IN_QUERY,
-                description="Filter by industry",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "salary_min",
-                openapi.IN_QUERY,
-                description="Filter by min salary",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "salary_max",
-                openapi.IN_QUERY,
-                description="Filter by max salary",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "search",
-                openapi.IN_QUERY,
-                description="Search jobs",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "ordering",
-                openapi.IN_QUERY,
-                description="Order by fields",
-                type=openapi.TYPE_STRING,
-            ),
-        ]
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[permissions.IsAuthenticated, IsApplicant],
+        url_path="apply",
     )
+    def apply(self, request, pk=None):
+        job = self.get_object()
+        if JobApplication.objects.filter(job=job, applicant=request.user).exists():
+            return Response(
+                {"error": "You have already applied to this job."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = JobApplicationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(job=job, applicant=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True,
+        methods=["get"],
+        permission_classes=[permissions.IsAuthenticated, IsRecruiterOfJob],
+        url_path="applications",
+    )
+    def applications(self, request, pk=None):
+        job = self.get_object()
+        applications = job.applications.all()
+        serializer = JobApplicationSerializer(applications, many=True)
+        return Response(serializer.data)
+
+    @swagger_auto_schema(manual_parameters=job_filter_params)
     def list(self, request, *args, **kwargs):
         """List all jobs with filters, search and ordering"""
         return super().list(request, *args, **kwargs)
 
 
-class JobApplicationViewSet(viewsets.ModelViewSet):
-    queryset = JobApplication.objects.all()
+class ApplicantApplicationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Applicant can only list their own applications
+    at /applicant/applications/
+    """
+
     serializer_class = JobApplicationSerializer
-    permission_classes = [IsApplicantOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsApplicant]
+
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_class = JobFilter
-    search_fields = ["title", "description", "company", "requirements"]
-    ordering_fields = ["created_at", "salary_min", "salary_max"]
 
-    def perform_create(self, serializer):
-        serializer.save(applicant=self.request.user)
+    filterset_fields = ["status", "job"]
+    search_fields = ["cover_letter", "job__title", "job__company"]
+    ordering_fields = ["created_at", "updated_at", "status"]
+    ordering = ["-created_at"]
 
-    def update(self, request, *args, **kwargs):
-        return Response({"error": "Applications cannot be updated"}, status=405)
+    def get_queryset(self):
+        return JobApplication.objects.filter(applicant=self.request.user)
 
-    def partial_update(self, request, *args, **kwargs):
-        return Response({"error": "Applications cannot be updated"}, status=405)
 
-    @action(
-        detail=True,
-        methods=["patch"],
-        permission_classes=[permissions.IsAuthenticated, IsRecruiterOfJob],
-    )
-    def change_status(self, request, pk=None):
-        """Recruiter changes application status"""
-        application = self.get_object()
-        new_status = request.data.get("status")
+class JobApplicationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Recruiter can only list applications for their own jobs
+    at /jobs/{job_id}/applications/
+    """
 
-        if new_status not in dict(JobApplication.APPLICATION_STATUS_CHOICES):
-            return Response(
-                {"error": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
-            )
+    serializer_class = JobApplicationSerializer
+    permission_classes = [permissions.IsAuthenticated, IsRecruiterOfJob]
 
-        application.status = new_status
-        application.save()
-        return Response({"status": "updated", "new_status": application.status})
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+
+    filterset_class = JobApplicationFilter
+    search_fields = ["job__title", "applicant__email"]
+    ordering_fields = ["created_at", "status"]
+
+    def get_queryset(self):
+        job_id = self.kwargs.get("id")
+        return JobApplication.objects.filter(job_id=job_id)
+
+
+class RecruiterJobViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Recruiter can only list their own jobs
+    at /recruiter/jobs/
+    """
+
+    serializer_class = JobSerializer
+    permission_classes = [permissions.IsAuthenticated, IsRecruiter]
+
+    def get_queryset(self):
+        return Job.objects.filter(recruiter=self.request.user)
