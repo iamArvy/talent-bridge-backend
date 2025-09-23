@@ -24,8 +24,11 @@ class ApplicantOwnedModelViewSet(ModelViewSet):
 
     permission_classes = [IsAuthenticated, IsApplicant]
 
+    def get_applicant(self):
+        return self.request.user.applicant_profile
+
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(applicant=self.get_applicant())
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
